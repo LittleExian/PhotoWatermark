@@ -19,8 +19,8 @@ def create_image_with_exif(output_path, width=800, height=600, date_str=None):
     :param height: 图片高度
     :param date_str: 自定义拍摄日期字符串，格式为"YYYY:MM:DD HH:MM:SS"
     """
-    # 创建一个空白图片
-    img = Image.new('RGB', (width, height), color='white')
+    # 创建一个非白色背景的图片
+    img = Image.new('RGB', (width, height), color='lightgray')
     draw = ImageDraw.Draw(img)
     
     # 在图片上添加一些内容
@@ -83,8 +83,8 @@ def run_watermark_tool(image_path):
     """
     print(f"\n运行水印工具处理图片: {image_path}")
     
-    # 构造命令行参数
-    cmd = [sys.executable, "photo_watermark.py", "--path", image_path]
+    # 构造命令行参数，使用黑色水印以便在灰色背景上更清晰可见
+    cmd = [sys.executable, "photo_watermark.py", "--path", image_path, "--color", "black"]
     
     try:
         # 执行命令
@@ -165,8 +165,8 @@ def main():
         return
     
     # 验证结果
-    # 输出目录应该是 test_with_exif_watermark
-    output_dir = test_image_path.replace('.jpg', '_watermark').replace(test_dir, f"{test_dir}_watermark")
+    # 输出目录在test_with_exif目录下
+    output_dir = os.path.join(test_dir, f"{test_dir}_watermark")
     verify_watermark(output_dir, custom_date)
     
     print("\n===== 测试完成 =====")
