@@ -85,8 +85,15 @@ def add_watermark_to_image(image_path, output_dir, font_size=16, color='white', 
                 font = ImageFont.load_default()
                 print("警告: 无法加载中文字体，可能导致水印显示不正确")
 
-        # 获取文本尺寸
-        text_width, text_height = draw.textsize(watermark_text, font=font)
+        # 获取文本尺寸 - 使用textbbox替代textsize（Pillow 8.0.0+兼容性）
+        try:
+            # 尝试使用textbbox（Pillow 8.0.0+）
+            bbox = draw.textbbox((0, 0), watermark_text, font=font)
+            text_width = bbox[2] - bbox[0]
+            text_height = bbox[3] - bbox[1]
+        except AttributeError:
+            # 兼容旧版本Pillow
+            text_width, text_height = draw.textsize(watermark_text, font=font)
 
         # 计算文本位置
         margin = 10  # 边距
